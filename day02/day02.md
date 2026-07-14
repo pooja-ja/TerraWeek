@@ -33,7 +33,7 @@ An argument is a single `key = value` line (like `name = "nginx"`). A block is a
 ### Task 2: Variables, Types & Validation
 Create a `variables.tf` and define variables covering **each major type**:
 - Primitives: `string`, `number`, `bool`
-  ```hcl
+```hcl
 variable "environment" {
   description = "Deployment environment name"
   type        = string
@@ -75,24 +75,6 @@ variable "allowed_cidrs" {
 ```
 - Structural: `object({...})`, `tuple([...])`
 ```hcl
-variable "external_port" {
-  description = "Host port to expose the container on."
-  type        = number
-  default     = 8080
-
-  validation {
-    condition     = var.external_port > 1024 && var.external_port < 65535
-    error_message = "external_port must be between 1025 and 65534."
-  }
-}
-```
-
-Add at least one variable with:
-- a **`default`**,
-- a **`validation`** block (e.g. only allow certain values),
-- the **`sensitive = true`** flag.
-
-```hcl
 variable "app_config" {
   description = "Structured application configuration"
   type = object({
@@ -114,7 +96,23 @@ variable "connection_info" {
   default     = ["db.internal.local", 5432, true]
 }
 ```
+Add at least one variable with:
+- a **`default`**,
+- a **`validation`** block (e.g. only allow certain values),
+- the **`sensitive = true`** flag.
 
+```hcl
+variable "external_port" {
+  description = "Host port to expose the container on."
+  type        = number
+  default     = 8080
+
+  validation {
+    condition     = var.external_port > 1024 && var.external_port < 65535
+    error_message = "external_port must be between 1025 and 65534."
+  }
+}
+```
 ### Task 3: Locals, Outputs & Functions
 - Use a **`locals`** block to compute a value (e.g. a common `name_prefix` or merged tags).
   `locals` computes `name_prefix` (string interpolation) and `common_labels` (merging default tags with `var.extra_labels` via `merge()`). Outputs expose the container's name, URL, and computed values so I don't have to dig through `docker ps` to find them.
